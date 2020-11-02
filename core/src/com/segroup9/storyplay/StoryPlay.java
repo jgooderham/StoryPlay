@@ -120,8 +120,10 @@ public class StoryPlay extends Group {
         }
     }
 
+    // use negative index to reload current page
     public void gotoPage(int index) {
-        currentPage = (index + pages.size) % pages.size;
+        if (index >= 0)
+            currentPage = (index + pages.size) % pages.size;
         loadPageActors();
     }
 

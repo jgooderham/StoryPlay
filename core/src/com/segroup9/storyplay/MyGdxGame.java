@@ -201,8 +201,10 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 				public void changed(ChangeEvent event, Actor actor) {
 					StoryActorDef actorDef = ((StoryActorDef)selectedActor.getUserObject());
 					actorDef.text = actorTextTF.getText();
-					if (selectedActor instanceof Label)
-						((Label)selectedActor).setText(actorTextTF.getText());
+					if (selectedActor instanceof Label) {
+						((Label) selectedActor).setText(actorTextTF.getText());
+						storyPlay.gotoPage(-1);    // reload page to update actor text
+					}
 				}
 			});
 			actionParamsTbl = new Table();
