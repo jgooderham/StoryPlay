@@ -64,9 +64,8 @@ public class StoryPlay extends Group {
                 actor = new Image(reg);
             else {
                 Label txt = new Label(actorDef.text, skin, "place-holder");
-                txt.setAlignment(Align.center);
-                txt.setWrap(true);
-                txt.setWidth(200);
+                txt.setFontScale(actorDef.scale);
+                txt.setWidth(actorDef.scale * 100);
                 actor = txt;
             }
 
@@ -75,7 +74,8 @@ public class StoryPlay extends Group {
             actor.setName(actorDef.imageName);
             actor.setPosition(actorDef.posX, actorDef.posY);
             actor.setRotation(actorDef.rotation);
-            actor.setScale(actorDef.scale, Math.abs(actorDef.scale));
+            if (!(actor instanceof Label))
+                actor.setScale(actorDef.scale, Math.abs(actorDef.scale));
 
             // if we're live, setup actions on the actor
             if (live) {

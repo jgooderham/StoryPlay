@@ -376,7 +376,10 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 				// begin scale operation on selected actor
 				if (keycode == Input.Keys.S) {
 					scaling = true;
-					initialValue = selectedActor.getScaleX();
+					if (selectedActor instanceof Label)
+						initialValue = ((Label) selectedActor).getFontScaleX();
+					else
+						initialValue = selectedActor.getScaleX();
 					stage.screenToStageCoordinates(downPt.set(Gdx.input.getX(), Gdx.input.getY()));
 					downPt.sub(selectedActor.getX(), selectedActor.getY());
 				}
@@ -503,7 +506,11 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 					stage.screenToStageCoordinates(tmpPt.set(screenX, screenY));
 					tmpPt.sub(selectedActor.getX(), selectedActor.getY());
 					float scale = initialValue * (tmpPt.len() / downPt.len());
-					selectedActor.setScale(scale, Math.abs(scale)); // preserve flip horizontally but not vertically
+					if (selectedActor instanceof Label) {
+						((Label) selectedActor).setFontScale(scale);
+						selectedActor.setWidth(scale * 100);
+					} else
+						selectedActor.setScale(scale, Math.abs(scale)); // preserve flip horizontally but not vertically
 				}
 			}
 		}

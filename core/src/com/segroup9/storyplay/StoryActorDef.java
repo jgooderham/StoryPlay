@@ -1,6 +1,7 @@
 package com.segroup9.storyplay;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
 
 public class StoryActorDef {
@@ -30,6 +31,9 @@ public class StoryActorDef {
         posX = actor.getX();
         posY = actor.getY();
         rotation = actor.getRotation();
-        scale = actor.getScaleX();
+        if (actor instanceof Label)
+            scale = ((Label) actor).getFontScaleX();
+        else
+            scale = actor.getScaleX();
     }
 }
