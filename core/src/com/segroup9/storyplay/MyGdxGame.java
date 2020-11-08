@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.ColorAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -36,6 +37,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	float initialValue;
 	Vector2 initialPt = new Vector2();
 	Color tmpColor = new Color();
+	ColorAction colorFlashAction;
 
 	// ui widgets to keep track of
 	Table actionParamsTbl;
@@ -45,6 +47,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	TextField pgNameTF, targetPageTF, actorTextTF;
 	List<ActionDef> actionsList;
 	SelectBox<ActionDef.ActionType> actionTypeSB;
+	Slider rSlider, gSlider, bSlider, aSlider;
 
 	Dialog exitDlg;
 	private boolean canExit = false;
@@ -219,7 +222,14 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 			t.add(actionsAdd);
 			t.add(actionsRemove);
 			t.row().expandX().fill().pad(2);
-			Label lbl = new Label("Target Page:", skin);
+			Label lbl = new Label("Action Type:", skin);
+			lbl.setAlignment(Align.right);
+			t.add(lbl);
+			t.add(actionTypeSB);
+			t.row().colspan(2);
+			t.add(actionParamsTbl);
+			t.row().expandX().fill().pad(2);
+			lbl = new Label("Target Page:", skin);
 			lbl.setAlignment(Align.right);
 			t.add(lbl);
 			t.add(targetPageTF);
@@ -228,13 +238,38 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 			lbl.setAlignment(Align.right);
 			t.add(lbl);
 			t.add(actorTextTF);
-			t.row().expandX().fill().pad(2);
-			lbl = new Label("Action Type:", skin);
-			lbl.setAlignment(Align.right);
-			t.add(lbl);
-			t.add(actionTypeSB);
-			t.row().colspan(2);
-			t.add(actionParamsTbl);
+			rSlider = colorChanSlider(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					colorFlashAction.setEndColor(tmpColor.set(rSlider.getValue(), tmpColor.g, tmpColor.b, tmpColor.a));
+				}
+			});
+			t.row();
+			t.add(rSlider);
+			gSlider = colorChanSlider(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					colorFlashAction.setEndColor(tmpColor.set(tmpColor.r, gSlider.getValue(), tmpColor.b, tmpColor.a));
+				}
+			});
+			t.row();
+			t.add(gSlider);
+			bSlider = colorChanSlider(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					colorFlashAction.setEndColor(tmpColor.set(tmpColor.r, tmpColor.g, bSlider.getValue(), tmpColor.a));
+				}
+			});
+			t.row();
+			t.add(bSlider);
+			aSlider = colorChanSlider(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					colorFlashAction.setEndColor(tmpColor.set(tmpColor.r, tmpColor.g, tmpColor.b, aSlider.getValue()));
+				}
+			});
+			t.row();
+			t.add(aSlider);
 
 			exitDlg = new Dialog("Save to file and exit?", skin);
 			TextButton saveButton = new TextButton("Save", skin);
@@ -279,6 +314,12 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		return dlg;
 	}
 
+	private Slider colorChanSlider(ChangeListener listener) {
+		Slider slider = new Slider(0f, 1f, 0.01f, false, skin);
+		slider.addListener(listener);
+		return slider;
+	}
+
 	@Override
 	public void render () {
 		// clear the screen
@@ -313,6 +354,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 			// play/stop storyplay from current page
 			if (keycode == Input.Keys.SPACE) {
 				if (!storyPlay.isLive()) {
+					deselectActor();
 					storyPlay.saveCurrentPage();	// save page before playing
 					desToolsTbl.setVisible(false);	// hide dev ui when playing
 				} else {
@@ -365,6 +407,10 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 						actionsList.setItems(actorDef.actionDefs);
 						targetPageTF.setText(actorDef.targetPage);
 						actorTextTF.setText(actorDef.text);
+						rSlider.setValue(tmpColor.r);
+						gSlider.setValue(tmpColor.g);
+						bSlider.setValue(tmpColor.b);
+						aSlider.setValue(tmpColor.a);
 					}
 					actionsDlg.show(stage);
 					actionsDlg.setSize(0.8f * Gdx.graphics.getWidth(), 0.8f * Gdx.graphics.getHeight());
@@ -438,10 +484,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
 		if (designerMode && !storyPlay.isLive()) {
-			if (selectedActor != null) {
-				selectedActor.clearActions();
-				selectedActor.setColor(tmpColor);
-			}
+			deselectActor();
 			nextActor.setVisible(false);
 			nextActor.clearActions();
 
@@ -452,16 +495,23 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 				if (!selectedActor.isDescendantOf(storyPlay)) // only move our actors
 					selectedActor = null;
 				else {
-					tmpColor.set(selectedActor.getColor());
+					colorFlashAction = Actions.color(tmpColor, 0.5f, Interpolation.smooth);
+					colorFlashAction.setEndColor(tmpColor.set(selectedActor.getColor()));
 					selectedActor.addAction(Actions.forever(Actions.sequence(
-							Actions.color(Color.ORANGE, 0.5f, Interpolation.smooth),
-							Actions.color(tmpColor, 0.5f, Interpolation.smooth))));
+							Actions.color(Color.ORANGE, 0.5f, Interpolation.smooth), colorFlashAction)));
 					initialPt.set(selectedActor.getX(), selectedActor.getY());
 					stage.screenToStageCoordinates(downPt.set(screenX, screenY));
 				}
 			}
 		}
 		return stage.touchDown(screenX, screenY, pointer, button);
+	}
+
+	private void deselectActor() {
+		if (selectedActor != null) {
+			selectedActor.clearActions();
+			selectedActor.setColor(tmpColor);
+		}
 	}
 
 	@Override

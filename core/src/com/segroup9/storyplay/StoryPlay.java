@@ -76,6 +76,7 @@ public class StoryPlay extends Group {
             actor.setRotation(actorDef.rotation);
             if (!(actor instanceof Label))
                 actor.setScale(actorDef.scale, Math.abs(actorDef.scale));
+            actor.setColor(actorDef.color);
 
             // if we're live, setup actions on the actor
             if (live) {

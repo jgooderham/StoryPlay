@@ -1,5 +1,6 @@
 package com.segroup9.storyplay;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
@@ -8,6 +9,7 @@ public class StoryActorDef {
     String imageName;
     String text;
     float posX, posY, rotation, scale;
+    Color color = Color.WHITE.cpy();
     String targetPage = "";
     Array<ActionDef> actionDefs = new Array<>();
 
@@ -35,5 +37,6 @@ public class StoryActorDef {
             scale = ((Label) actor).getFontScaleX();
         else
             scale = actor.getScaleX();
+        color.set(actor.getColor());
     }
 }
