@@ -47,7 +47,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	TextField pgNameTF, targetPageTF, actorTextTF;
 	List<ActionDef> actionsList;
 	SelectBox<ActionDef.ActionType> actionTypeSB;
-	Slider rSlider, gSlider, bSlider, aSlider;
+	ColorPicker pageCP, actorCP;
 
 	Dialog exitDlg;
 	private boolean canExit = false;
@@ -111,8 +111,9 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 				}
 			});
 			pgNameTF = new TextField("", skin);
-			pgNameDlg.getContentTable().row().fill().expand().pad(5);
-			pgNameDlg.getContentTable().add(pgNameTF);
+			Table ct = pgNameDlg.getContentTable();
+			ct.row().fill().expand().pad(5);
+			ct.add(pgNameTF);
 			pgNameDlg.setModal(true);
 
 			// create dialog to edit page narration text
@@ -127,12 +128,25 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
 					pgNarrationDlg.hide();
+					storyPlay.setPageColor(tmpColor);	// reset page color on cancel
 					Gdx.input.setInputProcessor(MyGdxGame.this);
 				}
 			});
 			narrationTA = new TextArea("", skin);
-			pgNarrationDlg.getContentTable().row().fill().expand().pad(5);
-			pgNarrationDlg.getContentTable().add(narrationTA);
+			pageCP = new ColorPicker(new Color(0.25f, 0.25f, 0.25f, 1), skin);
+			pageCP.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					storyPlay.setPageColor(pageCP.color);
+				}
+			});
+			ct = pgNarrationDlg.getContentTable();
+			ct.row().fill().expand().pad(5);
+			ct.add(narrationTA);
+			ct.row().colspan(2);
+			ct.add(new Label("Background Color", skin));
+			ct.row();
+			ct.add(pageCP);
 			pgNarrationDlg.setModal(true);
 
 			// create dialog to edit actor actions
@@ -142,12 +156,15 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 					// save list action defs onto actor
 					StoryActorDef actorDef = ((StoryActorDef)selectedActor.getUserObject());
 					actorDef.actionDefs = new Array<ActionDef>(actionsList.getItems());
+					selectedActor.setColor(tmpColor.set(colorFlashAction.getEndColor()));
 					actionsDlg.hide();
 					Gdx.input.setInputProcessor(MyGdxGame.this);
 				}
 			}, new ChangeListener() {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
+					colorFlashAction.setEndColor(tmpColor);
+					selectedActor.setColor(tmpColor);
 					actionsDlg.hide();
 					Gdx.input.setInputProcessor(MyGdxGame.this);
 				}
@@ -214,7 +231,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 			actionParamsTbl = new Table();
 
 			// layout the controls created above
-			Table ct = actionsDlg.getContentTable();
+			ct = actionsDlg.getContentTable();
 			ct.row().expand().fill().pad(2);
 			ct.add(new ScrollPane(actionsList));
 			Table t = new Table();
@@ -240,38 +257,17 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 			lbl.setAlignment(Align.right);
 			t.add(lbl);
 			t.add(actorTextTF);
-			rSlider = colorChanSlider(new ChangeListener() {
+			actorCP = new ColorPicker(Color.WHITE, skin);
+			actorCP.addListener(new ChangeListener() {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
-					colorFlashAction.setEndColor(tmpColor.set(rSlider.getValue(), tmpColor.g, tmpColor.b, tmpColor.a));
+					colorFlashAction.setEndColor(actorCP.color);
 				}
 			});
-			t.row();
-			t.add(rSlider);
-			gSlider = colorChanSlider(new ChangeListener() {
-				@Override
-				public void changed(ChangeEvent event, Actor actor) {
-					colorFlashAction.setEndColor(tmpColor.set(tmpColor.r, gSlider.getValue(), tmpColor.b, tmpColor.a));
-				}
-			});
-			t.row();
-			t.add(gSlider);
-			bSlider = colorChanSlider(new ChangeListener() {
-				@Override
-				public void changed(ChangeEvent event, Actor actor) {
-					colorFlashAction.setEndColor(tmpColor.set(tmpColor.r, tmpColor.g, bSlider.getValue(), tmpColor.a));
-				}
-			});
-			t.row();
-			t.add(bSlider);
-			aSlider = colorChanSlider(new ChangeListener() {
-				@Override
-				public void changed(ChangeEvent event, Actor actor) {
-					colorFlashAction.setEndColor(tmpColor.set(tmpColor.r, tmpColor.g, tmpColor.b, aSlider.getValue()));
-				}
-			});
-			t.row();
-			t.add(aSlider);
+			t.row().colspan(2);
+			t.add(new Label("Actor Color", skin));
+			t.row().colspan(2);
+			t.add(actorCP);
 
 			exitDlg = new Dialog("Save to file and exit?", skin);
 			TextButton saveButton = new TextButton("Save", skin);
@@ -324,8 +320,9 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public void render () {
-		// clear the screen
-		Gdx.gl.glClearColor(0.25f, 0.25f, 0.25f, 1);
+		// clear the screen to page color
+		Color c = storyPlay.getBGColor();
+		Gdx.gl.glClearColor(c.r, c.g, c.b, c.a);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// update the stage actions and render it
@@ -390,9 +387,11 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 
 			// bring up narration text dialog for current page
 			if (keycode == Input.Keys.M) {
+				deselectActor();
 				narrationTA.setText(storyPlay.getPageNarration());
+				pageCP.setValue(tmpColor.set(storyPlay.getPageColor()));
 				pgNarrationDlg.show(stage);
-				pgNarrationDlg.setSize(0.8f * Gdx.graphics.getWidth(), 0.8f * Gdx.graphics.getHeight());
+				pgNarrationDlg.setSize(0.5f * Gdx.graphics.getWidth(), 0.5f * Gdx.graphics.getHeight());
 				pgNarrationDlg.setPosition(
 						0.5f * Gdx.graphics.getWidth(), 0.5f * Gdx.graphics.getHeight(), Align.center);
 				Gdx.input.setInputProcessor(stage);
@@ -409,10 +408,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 						actionsList.setItems(actorDef.actionDefs);
 						targetPageTF.setText(actorDef.targetPage);
 						actorTextTF.setText(actorDef.text);
-						rSlider.setValue(tmpColor.r);
-						gSlider.setValue(tmpColor.g);
-						bSlider.setValue(tmpColor.b);
-						aSlider.setValue(tmpColor.a);
+						actorCP.setValue(tmpColor);
 					}
 					actionsDlg.show(stage);
 					actionsDlg.setSize(0.8f * Gdx.graphics.getWidth(), 0.8f * Gdx.graphics.getHeight());

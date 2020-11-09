@@ -1,6 +1,7 @@
 package com.segroup9.storyplay;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -21,12 +22,22 @@ public class StoryPlay extends Group {
     private final TextureAtlas textureAtlas;
     private final Skin skin;
     private boolean live = false;
+    private Group group = new Group();
+    private Actor bgColorActor = new Actor();
 
     public StoryPlay(TextureAtlas atlas, Skin skin) {
         textureAtlas = atlas;
         this.skin = skin;
         pages = new Array<>();
         pages.add(new StoryPage());
+        super.addActor(bgColorActor);
+        super.addActor(group);
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+
     }
 
     public void setLive(boolean isLive) {
@@ -42,14 +53,21 @@ public class StoryPlay extends Group {
         // save current page actors
         StoryPage page = pages.get(currentPage);
         page.actorDefs.clear();
-        for (Actor child : getChildren())
+        for (Actor child : group.getChildren())
             page.add(child);
     }
 
     private void loadPageActors() {
         // remove all actors from stage and load current page
-        clearChildren();
+        group.clearChildren();
         StoryPage page = pages.get(currentPage);
+
+        // set new page color, smooth transition if live
+        if (live) {
+            bgColorActor.clearActions();
+            bgColorActor.addAction(Actions.color(page.backgroundColor, 1, Interpolation.smooth2));
+        } else
+            bgColorActor.setColor(page.backgroundColor);
 
         // load page actors to stage and initialize
         for (final StoryActorDef actorDef : page.actorDefs) {
@@ -107,7 +125,8 @@ public class StoryPlay extends Group {
                 }
                 actor.addAction(seq);
             }
-            super.addActor(actor);
+            group.addActor(actor);
+            //super.addActor(actor);
         }
 
         // if we're live, display the page's narration text
@@ -117,7 +136,8 @@ public class StoryPlay extends Group {
             nar.setPosition(40f, -40f);
             nar.setTouchable(Touchable.disabled);
             nar.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
-            super.addActor(nar);
+            group.addActor(nar);
+            //super.addActor(nar);
         }
     }
 
@@ -156,11 +176,13 @@ public class StoryPlay extends Group {
         gotoPage(currentPage);
     }
 
-    public String getPageName() {
-        return pages.get(currentPage).name;
-    }
-    public void setPageName(String name) {
-        pages.get(currentPage).name = name;
+    public String getPageName() { return pages.get(currentPage).name; }
+    public void setPageName(String name) { pages.get(currentPage).name = name; }
+    public Color getBGColor() { return bgColorActor.getColor(); }
+    public Color getPageColor() { return pages.get(currentPage).backgroundColor; }
+    public void setPageColor(Color color) {
+        bgColorActor.setColor(color);
+        pages.get(currentPage).backgroundColor.set(color);
     }
 
     private int lookUpPageName(String searchName) {
@@ -173,7 +195,7 @@ public class StoryPlay extends Group {
 
     @Override
     public void addActor(Actor actor) {
-        super.addActor(actor);
+        group.addActor(actor);
         pages.get(currentPage).add(actor);
     }
 
