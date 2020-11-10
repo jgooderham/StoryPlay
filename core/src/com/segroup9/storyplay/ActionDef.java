@@ -1,5 +1,6 @@
 package com.segroup9.storyplay;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -84,7 +85,8 @@ public class ActionDef {
         switch (type) {
             case MoveTo:
                 return Actions.sequence(Actions.delay(params[0]),
-                        Actions.moveTo(params[1], params[2], params[3], interp));
+                        Actions.moveTo(params[1] * Gdx.graphics.getWidth(),
+                                params[2] * Gdx.graphics.getHeight(), params[3], interp));
             case FadeIn:
                 return Actions.sequence(Actions.alpha(0), Actions.delay(params[0]),
                         Actions.fadeIn(params[1], interp));
@@ -160,7 +162,7 @@ public class ActionDef {
     // text filter for float characters to constrain input on parameter boxes
     static public class FloatFilter implements TextField.TextFieldFilter {
         public boolean acceptChar (TextField textField, char c) {
-            return Character.isDigit(c) || c == '.';
+            return Character.isDigit(c) || c == '.' || (c == '-' && textField.getText().length() == 0);
         }
     }
 
