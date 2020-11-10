@@ -3,6 +3,8 @@ package com.segroup9.storyplay;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -19,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import java.util.HashMap;
 
 public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	Stage stage;
@@ -26,6 +29,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	TextureAtlas atlas;
 	Array<AtlasRegion> atlasRegions;
 	Skin skin;
+	HashMap<String, ParticleEffectPool> particleFX;
 
 	boolean designerMode = false;
 	Actor selectedActor;
@@ -58,6 +62,15 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		atlas = new TextureAtlas(Gdx.files.internal("sprites.atlas"));
 		atlasRegions = atlas.getRegions();
 
+		// load all the particle effects
+		particleFX = new HashMap<String, ParticleEffectPool>();
+		String[] particleFiles = { "bigbubbles.p", "bubbles.p", "fish.p" };
+		for (String filename : particleFiles) {
+			ParticleEffect p = new ParticleEffect();
+			p.load(Gdx.files.internal("particleFX/" + filename), atlas);
+			particleFX.put(filename, new ParticleEffectPool(p, 5, 5));
+		}
+
 		// load the ui skin graphics, should only need this for designer mode once narration is added later
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		// no nice way to resize fonts within the skin file so we do it here for the narration style...
@@ -67,7 +80,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 
 		// setup the stage and storyplay
 		stage = new Stage(new ScreenViewport());
-		storyPlay = new StoryPlay(atlas, skin);
+		storyPlay = new StoryPlay(atlas, skin, particleFX);
 		storyPlay.setLive(!designerMode);
 		try {
 			storyPlay.loadFromFile();

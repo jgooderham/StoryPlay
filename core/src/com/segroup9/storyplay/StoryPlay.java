@@ -2,6 +2,7 @@ package com.segroup9.storyplay;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import java.util.HashMap;
 
 public class StoryPlay extends Group {
     private Array<StoryPage> pages;
@@ -22,12 +24,17 @@ public class StoryPlay extends Group {
     private final TextureAtlas textureAtlas;
     private final Skin skin;
     private boolean live = false;
-    private Group group = new Group();
-    private Actor bgColorActor = new Actor();
+    private final Group group;
+    private final Actor bgColorActor;
+    private final HashMap<String, ParticleEffectPool> particleFX;
 
-    public StoryPlay(TextureAtlas atlas, Skin skin) {
+    public StoryPlay(TextureAtlas atlas, Skin skin, HashMap<String, ParticleEffectPool> particles) {
         textureAtlas = atlas;
         this.skin = skin;
+        particleFX = particles;
+
+        group = new Group();
+        bgColorActor = new Actor();
         pages = new Array<>();
         pages.add(new StoryPage());
         super.addActor(bgColorActor);
@@ -37,7 +44,6 @@ public class StoryPlay extends Group {
     @Override
     public void act(float delta) {
         super.act(delta);
-
     }
 
     public void setLive(boolean isLive) {
@@ -58,6 +64,11 @@ public class StoryPlay extends Group {
     }
 
     private void loadPageActors() {
+        // particle actors need to free their PooledEffect before being removed
+        for (Actor actor : group.getChildren())
+            if (actor instanceof ParticleEffectActor)
+                ((ParticleEffectActor)actor).freeEffect();
+
         // remove all actors from stage and load current page
         group.clearChildren();
         StoryPage page = pages.get(currentPage);
@@ -71,7 +82,7 @@ public class StoryPlay extends Group {
 
         // load page actors to stage and initialize
         for (final StoryActorDef actorDef : page.actorDefs) {
-            Actor actor;
+            final Actor actor;
             TextureAtlas.AtlasRegion reg = textureAtlas.findRegion(actorDef.imageName);
             if (reg == null) {
                 System.out.println("Image missing!: " + actorDef.imageName);
@@ -81,10 +92,16 @@ public class StoryPlay extends Group {
             if ("".equals(actorDef.text) || actorDef.text == null)
                 actor = new Image(reg);
             else {
-                Label txt = new Label(actorDef.text, skin, "place-holder");
-                txt.setFontScale(actorDef.scale);
-                txt.setWidth(actorDef.scale * 100);
-                actor = txt;
+                if (live && particleFX.containsKey(actorDef.text)) {
+                    ParticleEffectActor p = new ParticleEffectActor(particleFX.get(actorDef.text).obtain());
+                    p.stop();
+                    actor = p;
+                } else {
+                    Label txt = new Label(actorDef.text, skin, "place-holder");
+                    txt.setFontScale(actorDef.scale);
+                    txt.setWidth(actorDef.scale * 100);
+                    actor = txt;
+                }
             }
 
             actor.setUserObject(actorDef);
@@ -102,6 +119,16 @@ public class StoryPlay extends Group {
                 SequenceAction seq = Actions.sequence();
                 for (ActionDef actionDef : actorDef.actionDefs)
                     seq.addAction(actionDef.getAction());
+
+                // if it's
+                if (actor instanceof ParticleEffectActor)
+                    seq.addAction(Actions.run(new Runnable() {
+                                                  @Override
+                                                  public void run() {
+                                                      ((ParticleEffectActor)actor).start();
+                                                  }
+                                              }
+                    ));
 
                 // if actor has a target page, make it a button that links to said page
                 if (!"".equals(actorDef.targetPage)) {

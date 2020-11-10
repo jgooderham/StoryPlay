@@ -6,70 +6,84 @@ filter: Linear,Linear
 repeat: none
 animals
   rotate: false
-  xy: 2, 133
+  xy: 2, 2
   size: 200, 151
   orig: 200, 151
   offset: 0, 0
   index: -1
 back
   rotate: false
-  xy: 204, 358
+  xy: 851, 705
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
+bubble
+  rotate: false
+  xy: 506, 280
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 cave
   rotate: false
-  xy: 2, 629
+  xy: 2, 679
   size: 589, 295
   orig: 589, 295
   offset: 0, 0
   index: -1
 fossil
   rotate: false
-  xy: 2, 2
+  xy: 364, 346
   size: 200, 129
   orig: 200, 129
   offset: 0, 0
   index: -1
 img-missing
   rotate: false
-  xy: 204, 228
+  xy: 204, 25
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 ocean
   rotate: false
-  xy: 2, 286
+  xy: 364, 477
   size: 200, 200
   orig: 200, 200
   offset: 0, 0
   index: -1
 scuba
   rotate: false
-  xy: 385, 491
+  xy: 304, 208
   size: 200, 136
   orig: 200, 136
   offset: 0, 0
   index: -1
 shark
   rotate: false
-  xy: 2, 488
+  xy: 593, 835
   size: 381, 139
   orig: 381, 139
   offset: 0, 0
   index: -1
+shipwreck
+  rotate: false
+  xy: 2, 351
+  size: 360, 326
+  orig: 360, 326
+  offset: 0, 0
+  index: -1
 start
   rotate: false
-  xy: 593, 600
+  xy: 593, 705
   size: 256, 128
   orig: 256, 128
   offset: 0, 0
   index: -1
 sub
   rotate: false
-  xy: 593, 730
+  xy: 2, 155
   size: 300, 194
   orig: 300, 194
   offset: 0, 0
