@@ -312,12 +312,6 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		return dlg;
 	}
 
-	private Slider colorChanSlider(ChangeListener listener) {
-		Slider slider = new Slider(0f, 1f, 0.01f, false, skin);
-		slider.addListener(listener);
-		return slider;
-	}
-
 	@Override
 	public void render () {
 		// clear the screen to page color
