@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Align;
 
 public class ActionDef {
 
-    enum ActionType { Delay, MoveTo, FadeIn, FadeOut };
+    enum ActionType { Delay, MoveTo, FadeIn, FadeOut, Sway };
     ActionType type = ActionType.Delay;
     float[] params = new float[6];
     enum InterpType { Linear, Smooth, Smooth2, Smoother, Bounce, BounceIn, BounceOut, Elastic, ElasticIn, ElasticOut,
@@ -82,42 +82,54 @@ public class ActionDef {
                 interp = Interpolation.linear;
         }
 
+        Action action;
         switch (type) {
+            case Sway:
+                float x = 0.5f * params[1];
+                int c = params[2] == -1 ? (int)params[2] : (int)(params[2] / params[1]);
+                action = Actions.repeat(c, Actions.sequence(Actions.rotateBy(15, x, interp),
+                        Actions.rotateBy(-15, x, interp)));
+                break;
             case MoveTo:
-                return Actions.sequence(Actions.delay(params[0]),
+                action = Actions.sequence(Actions.delay(params[0]),
                         Actions.moveTo(params[1] * Gdx.graphics.getWidth(),
                                 params[2] * Gdx.graphics.getHeight(), params[3], interp));
+                break;
             case FadeIn:
-                return Actions.sequence(Actions.alpha(0), Actions.delay(params[0]),
+                action = Actions.sequence(Actions.alpha(0), Actions.delay(params[0]),
                         Actions.fadeIn(params[1], interp));
+                break;
             case FadeOut:
-                return Actions.sequence(Actions.delay(params[0]), Actions.fadeOut(params[1], interp));
+                action = Actions.sequence(Actions.delay(params[0]), Actions.fadeOut(params[1], interp));
+                break;
             default:
-                return Actions.delay(params[0]);
+                action = Actions.delay(params[0]);
         }
+        return action;
     }
 
     // create ui controls to edit the parameters for a particular action
     public Table getParamControls(Skin skin) {
-        int pCount = 1;
         boolean hasInterp = false;
         String[] paramLabels = new String[] {"Duration:"};
         switch (type) {
             case FadeIn:
             case FadeOut:
                 paramLabels = new String[] {"Delay:", "Duration:"};
-                pCount = 2;
                 hasInterp = true;
                 break;
             case MoveTo:
                 paramLabels = new String[] {"Delay:", "X:", "Y:", "Duration:"};
-                pCount = 4;
+                hasInterp = true;
+                break;
+            case Sway:
+                paramLabels = new String[] {"Delay:", "Speed:", "Duration"};
                 hasInterp = true;
                 break;
         }
         // create the appropriate number of parameter boxes for the desired action type
         Table t = new Table();
-        for (int i = 0; i < pCount; i++) {
+        for (int i = 0; i < paramLabels.length; i++) {
             final int index = i;
             TextField tf = new TextField("0", skin);
             tf.setTextFieldFilter(new FloatFilter());
@@ -175,6 +187,9 @@ public class ActionDef {
             case FadeIn:
             case FadeOut:
                 return "Wait " + params[0] + " secs then " + type + " for " + params[1] + " secs";
+            case Sway:
+                return "Wait " + params[0] + " secs then " + type + " for" +
+                        (params[2] == -1 ? "ever" : " " + params[2] + " secs");
             default:
                 return "Wait " + params[0];
         }
