@@ -20,7 +20,7 @@ back
   index: -1
 bubble
   rotate: false
-  xy: 506, 280
+  xy: 204, 89
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -34,30 +34,37 @@ cave
   index: -1
 fossil
   rotate: false
-  xy: 364, 346
+  xy: 456, 208
   size: 200, 129
   orig: 200, 129
   offset: 0, 0
   index: -1
 img-missing
   rotate: false
-  xy: 204, 25
+  xy: 658, 575
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 ocean
   rotate: false
-  xy: 364, 477
+  xy: 456, 477
   size: 200, 200
   orig: 200, 200
   offset: 0, 0
   index: -1
 scuba
   rotate: false
-  xy: 304, 208
+  xy: 456, 339
   size: 200, 136
   orig: 200, 136
+  offset: 0, 0
+  index: -1
+seaweed
+  rotate: false
+  xy: 364, 235
+  size: 90, 442
+  orig: 90, 442
   offset: 0, 0
   index: -1
 shark
