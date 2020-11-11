@@ -97,10 +97,7 @@ public class StoryPlay extends Group {
                     p.stop();
                     actor = p;
                 } else {
-                    Label txt = new Label(actorDef.text, skin, "place-holder");
-                    txt.setFontScale(actorDef.scale);
-                    txt.setWidth(actorDef.scale * 100);
-                    actor = txt;
+                    actor = new TextActor(actorDef.text, skin);
                 }
             }
 
@@ -109,8 +106,7 @@ public class StoryPlay extends Group {
             actor.setName(actorDef.imageName);
             actor.setPosition(actorDef.posX, actorDef.posY);
             actor.setRotation(actorDef.rotation);
-            if (!(actor instanceof Label))
-                actor.setScale(actorDef.scale, Math.abs(actorDef.scale));
+            actor.setScale(actorDef.scale, Math.abs(actorDef.scale));
             actor.setColor(actorDef.color);
 
             // if we're live, setup actions on the actor
@@ -153,7 +149,6 @@ public class StoryPlay extends Group {
                 actor.addAction(seq);
             }
             group.addActor(actor);
-            //super.addActor(actor);
         }
 
         // if we're live, display the page's narration text
@@ -164,7 +159,6 @@ public class StoryPlay extends Group {
             nar.setTouchable(Touchable.disabled);
             nar.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
             group.addActor(nar);
-            //super.addActor(nar);
         }
     }
 

@@ -33,10 +33,7 @@ public class StoryActorDef {
         posX = actor.getX();
         posY = actor.getY();
         rotation = actor.getRotation();
-        if (actor instanceof Label)
-            scale = ((Label) actor).getFontScaleX();
-        else
-            scale = actor.getScaleX();
+        scale = actor.getScaleX();
         color.set(actor.getColor());
     }
 }

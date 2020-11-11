@@ -41,7 +41,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	float initialValue;
 	Vector2 initialPt = new Vector2();
 	Color tmpColor = new Color();
-	ColorAction colorFlashAction;
+	ColorAction colorThrobAction;
 
 	// ui widgets to keep track of
 	Table actionParamsTbl;
@@ -169,14 +169,14 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 					// save list action defs onto actor
 					StoryActorDef actorDef = ((StoryActorDef)selectedActor.getUserObject());
 					actorDef.actionDefs = new Array<ActionDef>(actionsList.getItems());
-					selectedActor.setColor(tmpColor.set(colorFlashAction.getEndColor()));
+					selectedActor.setColor(tmpColor.set(colorThrobAction.getEndColor()));
 					actionsDlg.hide();
 					Gdx.input.setInputProcessor(MyGdxGame.this);
 				}
 			}, new ChangeListener() {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
-					colorFlashAction.setEndColor(tmpColor);
+					colorThrobAction.setEndColor(tmpColor);
 					selectedActor.setColor(tmpColor);
 					actionsDlg.hide();
 					Gdx.input.setInputProcessor(MyGdxGame.this);
@@ -236,8 +236,8 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 				public void changed(ChangeEvent event, Actor actor) {
 					StoryActorDef actorDef = ((StoryActorDef)selectedActor.getUserObject());
 					actorDef.text = actorTextTF.getText();
-					if (selectedActor instanceof Label)
-						((Label) selectedActor).setText(actorTextTF.getText());
+					if (selectedActor instanceof TextActor)
+						((TextActor) selectedActor).setText(actorTextTF.getText());
 					storyPlay.gotoPage(-1);    // reload page to update actor text
 				}
 			});
@@ -274,7 +274,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 			actorCP.addListener(new ChangeListener() {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
-					colorFlashAction.setEndColor(actorCP.color);
+					colorThrobAction.setEndColor(actorCP.color);
 				}
 			});
 			t.row().colspan(2);
@@ -500,10 +500,16 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 				if (!selectedActor.isDescendantOf(storyPlay)) // only move our actors
 					selectedActor = null;
 				else {
-					colorFlashAction = Actions.color(tmpColor, 0.5f, Interpolation.smooth);
-					colorFlashAction.setEndColor(tmpColor.set(selectedActor.getColor()));
+					// text actors will be selected by their label, need to grab the parent instead
+					if (selectedActor.getParent() instanceof TextActor)
+						selectedActor = selectedActor.getParent();
+
+					// add selected color throb action
+					colorThrobAction = Actions.color(tmpColor, 0.5f, Interpolation.smooth);
+					colorThrobAction.setEndColor(tmpColor.set(selectedActor.getColor()));
 					selectedActor.addAction(Actions.forever(Actions.sequence(
-							Actions.color(Color.ORANGE, 0.5f, Interpolation.smooth), colorFlashAction)));
+							Actions.color(Color.ORANGE, 0.5f, Interpolation.smooth), colorThrobAction)));
+
 					initialPt.set(selectedActor.getX(), selectedActor.getY());
 					stage.screenToStageCoordinates(downPt.set(screenX, screenY));
 				}

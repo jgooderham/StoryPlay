@@ -32,6 +32,8 @@ public class ParticleEffectActor extends Actor {
     }
 
     public void start() {
+        particleEffect.reset(true);
+        particleEffect.scaleEffect(getScaleX());
         active = true;
         particleEffect.start();
     }
