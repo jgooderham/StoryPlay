@@ -136,8 +136,11 @@ public class StoryPlay extends Group {
                     // throb actor to indicate it is a button now
                     float s = actor.getScaleY();
                     seq.addAction(Actions.forever(Actions.sequence(
-                            Actions.scaleTo(s*1.1f, s*1.1f, 1f, Interpolation.smooth),
-                            Actions.scaleTo(s*0.9f, s*0.9f, 1f, Interpolation.smooth))));
+                            Actions.scaleTo(s*1.05f, s*1.05f, 0.15f, Interpolation.smooth),
+                            Actions.scaleTo(s*0.95f, s*0.95f, 0.10f, Interpolation.smooth),
+                            Actions.scaleTo(s*1.05f, s*1.05f, 0.10f, Interpolation.smooth),
+                            Actions.scaleTo(s*0.95f, s*0.95f, 0.15f, Interpolation.smooth),
+                            Actions.delay(0.5f))));
                     actor.addCaptureListener(new ClickListener() {
                         @Override
                         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
