@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Align;
 
 public class ActionDef {
 
-    enum ActionType { Delay, MoveTo, FadeIn, FadeOut, Sway };
+    enum ActionType { Delay, MoveTo, FadeIn, FadeOut, Sway, Bob };
     ActionType type = ActionType.Delay;
     float[] params = new float[6];
     enum InterpType { Linear, Smooth, Smooth2, Smoother, Bounce, BounceIn, BounceOut, Elastic, ElasticIn, ElasticOut,
@@ -83,12 +83,20 @@ public class ActionDef {
         }
 
         Action action;
+        float x;
+        int c;
         switch (type) {
             case Sway:
-                float x = 0.5f * params[1];
-                int c = params[2] == -1 ? (int)params[2] : (int)(params[2] / params[1]);
-                action = Actions.repeat(c, Actions.sequence(Actions.rotateBy(15, x, interp),
-                        Actions.rotateBy(-15, x, interp)));
+                x = 0.5f * params[2];
+                c = params[3] == -1 ? (int)params[3] : (int)(params[3] / params[2]);
+                action = Actions.repeat(c, Actions.sequence(Actions.rotateBy(params[1], x, interp),
+                        Actions.rotateBy(-params[1], x, interp)));
+                break;
+            case Bob:
+                x = 0.5f * params[2];
+                c = params[3] == -1 ? (int)params[3] : (int)(params[3] / params[2]);
+                action = Actions.repeat(c, Actions.sequence(Actions.moveBy(0, params[1], x, interp),
+                        Actions.moveBy(0, -params[1], x, interp)));
                 break;
             case MoveTo:
                 action = Actions.sequence(Actions.delay(params[0]),
@@ -123,7 +131,8 @@ public class ActionDef {
                 hasInterp = true;
                 break;
             case Sway:
-                paramLabels = new String[] {"Delay:", "Speed:", "Duration"};
+            case Bob:
+                paramLabels = new String[] {"Delay:", "Amount:", "Speed:", "Duration"};
                 hasInterp = true;
                 break;
         }
@@ -188,8 +197,9 @@ public class ActionDef {
             case FadeOut:
                 return "Wait " + params[0] + " secs then " + type + " for " + params[1] + " secs";
             case Sway:
+            case Bob:
                 return "Wait " + params[0] + " secs then " + type + " for" +
-                        (params[2] == -1 ? "ever" : " " + params[2] + " secs");
+                        (params[3] == -1 ? "ever" : " " + params[3] + " secs");
             default:
                 return "Wait " + params[0];
         }

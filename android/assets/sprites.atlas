@@ -4,93 +4,100 @@ size: 1024,1024
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-animals
+anchor
   rotate: false
-  xy: 2, 2
-  size: 200, 151
-  orig: 200, 151
+  xy: 593, 656
+  size: 189, 200
+  orig: 189, 200
   offset: 0, 0
   index: -1
 back
   rotate: false
-  xy: 851, 705
+  xy: 180, 48
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 bubble
   rotate: false
-  xy: 204, 89
+  xy: 456, 373
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 cave
   rotate: false
-  xy: 2, 679
+  xy: 2, 702
   size: 589, 295
   orig: 589, 295
   offset: 0, 0
   index: -1
 fossil
   rotate: false
-  xy: 456, 208
+  xy: 584, 387
   size: 200, 129
   orig: 200, 129
   offset: 0, 0
   index: -1
 img-missing
   rotate: false
-  xy: 658, 575
+  xy: 786, 561
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-ocean
+paw
   rotate: false
-  xy: 456, 477
-  size: 200, 200
-  orig: 200, 200
+  xy: 784, 691
+  size: 167, 165
+  orig: 167, 165
   offset: 0, 0
   index: -1
 scuba
   rotate: false
-  xy: 456, 339
+  xy: 584, 518
   size: 200, 136
   orig: 200, 136
   offset: 0, 0
   index: -1
 seaweed
   rotate: false
-  xy: 364, 235
+  xy: 364, 258
   size: 90, 442
   orig: 90, 442
   offset: 0, 0
   index: -1
 shark
   rotate: false
-  xy: 593, 835
+  xy: 593, 858
   size: 381, 139
   orig: 381, 139
   offset: 0, 0
   index: -1
 shipwreck
   rotate: false
-  xy: 2, 351
+  xy: 2, 374
   size: 360, 326
   orig: 360, 326
   offset: 0, 0
   index: -1
-start
+shovel
   rotate: false
-  xy: 593, 705
-  size: 256, 128
-  orig: 256, 128
+  xy: 2, 2
+  size: 176, 174
+  orig: 176, 174
+  offset: 0, 0
+  index: -1
+squid
+  rotate: false
+  xy: 456, 439
+  size: 126, 261
+  orig: 126, 261
   offset: 0, 0
   index: -1
 sub
   rotate: false
-  xy: 2, 155
+  xy: 2, 178
   size: 300, 194
   orig: 300, 194
   offset: 0, 0
