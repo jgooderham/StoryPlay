@@ -30,6 +30,7 @@ public class StoryPlay extends Group {
     public static int HEAD_COUNT = 10;
     public Group liveGroup;
     private Image avatarBtn;
+    private Image backBtn;
     private int avatarIdx = 0;
 
     private final Actor bgColorActor;
@@ -50,6 +51,17 @@ public class StoryPlay extends Group {
         liveGroup = new Group();
         liveGroup.setTouchable(Touchable.childrenOnly);
         liveGroup.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        backBtn = new Image(atlas.findRegion("back"));
+        backBtn.setScale(0.5f);
+        backBtn.setOrigin(Align.center);
+        backBtn.setTouchable(Touchable.enabled);
+        backBtn.addCaptureListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                gotoPage(lookUpPageName("start"));
+                return true;
+            }
+        });
         setAvatar();
         super.addActor(liveGroup);
     }
@@ -57,6 +69,7 @@ public class StoryPlay extends Group {
     private void pickAvatar() {
         actorGroup.addAction( Actions.fadeOut(0.2f));
         avatarBtn.addAction( Actions.fadeOut(0.2f));
+        backBtn.addAction( Actions.fadeOut(0.2f));
         for (int i = 0; i < HEAD_COUNT; i++) {
             float y = (0.2f + (i/5) * 0.3f) * liveGroup.getHeight();
             float x = (0.1f + (i%5) * 0.2f * 0.8f) * liveGroup.getWidth();
@@ -104,8 +117,12 @@ public class StoryPlay extends Group {
             }
         });
         liveGroup.addActor(avatarBtn);
-        actorGroup.addAction( Actions.fadeIn(0.5f));
         avatarBtn.addAction( Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
+        liveGroup.addActor(backBtn);
+        backBtn.addAction( Actions.sequence(Actions.alpha(0), Actions.alpha(0.5f, 0.5f)));
+        backBtn.setPosition(10 + avatarBtn.getX() + 0.5f * (avatarBtn.getWidth() + backBtn.getWidth()),
+                avatarBtn.getY());
+        actorGroup.addAction( Actions.fadeIn(0.5f));
     }
 
     public void setLive(boolean isLive) {
