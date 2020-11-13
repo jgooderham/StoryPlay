@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -24,7 +25,13 @@ public class StoryPlay extends Group {
     private final TextureAtlas textureAtlas;
     private final Skin skin;
     private boolean live = false;
-    private final Group group;
+    private final Group actorGroup;
+
+    public static int HEAD_COUNT = 10;
+    public Group liveGroup;
+    private Image avatarBtn;
+    private int avatarIdx = 0;
+
     private final Actor bgColorActor;
     private final HashMap<String, ParticleEffectPool> particleFX;
 
@@ -33,21 +40,79 @@ public class StoryPlay extends Group {
         this.skin = skin;
         particleFX = particles;
 
-        group = new Group();
+        actorGroup = new Group();
         bgColorActor = new Actor();
         pages = new Array<>();
         pages.add(new StoryPage());
         super.addActor(bgColorActor);
-        super.addActor(group);
+        super.addActor(actorGroup);
+
+        liveGroup = new Group();
+        liveGroup.setTouchable(Touchable.childrenOnly);
+        liveGroup.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        setAvatar();
+        super.addActor(liveGroup);
     }
 
-    @Override
-    public void act(float delta) {
-        super.act(delta);
+    private void pickAvatar() {
+        actorGroup.addAction( Actions.fadeOut(0.2f));
+        avatarBtn.addAction( Actions.fadeOut(0.2f));
+        for (int i = 0; i < HEAD_COUNT; i++) {
+            float y = (0.2f + (i/5) * 0.3f) * liveGroup.getHeight();
+            float x = (0.1f + (i%5) * 0.2f * 0.8f) * liveGroup.getWidth();
+            final Image avatarChoice = new Image(textureAtlas.findRegion("head" + i));
+            avatarChoice.setOrigin(Align.center);
+            avatarChoice.setTouchable(Touchable.enabled);
+            avatarChoice.setPosition(x, y);
+            final int finalI = i;
+            avatarChoice.addCaptureListener(new ClickListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    avatarIdx = finalI;
+                    setAvatar();
+                    return true;
+                }
+            });
+            float d = MathUtils.random(0.5f, 0.85f);
+            avatarChoice.addAction(Actions.sequence(
+                    Actions.alpha(0), Actions.scaleTo(0.5f, 0.5f),
+                    Actions.parallel(
+                            Actions.fadeIn(d),
+                            Actions.scaleTo(1, 1, d, Interpolation.bounceOut)
+                    )
+            ));
+            liveGroup.addActor(avatarChoice);
+        }
+        TextActor title = new TextActor("Choose Your Character", skin);
+        title.setPosition(0.5f * (Gdx.graphics.getWidth() - title.getWidth()), 0.8f * Gdx.graphics.getHeight());
+        title.setColor(1, 1, 0, 1);
+        title.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
+        liveGroup.addActor(title);
+    }
+
+    private void setAvatar() {
+        liveGroup.clearChildren();
+        avatarBtn = new Image(textureAtlas.findRegion("head" + avatarIdx));
+        avatarBtn.setPosition(10, 10);
+        avatarBtn.setScale(0.8f);
+        avatarBtn.setTouchable(Touchable.enabled);
+        avatarBtn.addCaptureListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                pickAvatar();
+                return true;
+            }
+        });
+        liveGroup.addActor(avatarBtn);
+        actorGroup.addAction( Actions.fadeIn(0.5f));
+        avatarBtn.addAction( Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
     }
 
     public void setLive(boolean isLive) {
+        if (live && !isLive)
+            setAvatar();
         live = isLive;
+        liveGroup.setVisible(isLive);
         gotoPage(currentPage);
     }
 
@@ -59,18 +124,18 @@ public class StoryPlay extends Group {
         // save current page actors
         StoryPage page = pages.get(currentPage);
         page.actorDefs.clear();
-        for (Actor child : group.getChildren())
+        for (Actor child : actorGroup.getChildren())
             page.add(child);
     }
 
     private void loadPageActors() {
         // particle actors need to free their PooledEffect before being removed
-        for (Actor actor : group.getChildren())
+        for (Actor actor : actorGroup.getChildren())
             if (actor instanceof ParticleEffectActor)
                 ((ParticleEffectActor)actor).freeEffect();
 
         // remove all actors from stage and load current page
-        group.clearChildren();
+        actorGroup.clearChildren();
         StoryPage page = pages.get(currentPage);
 
         // set new page color, smooth transition if live
@@ -151,7 +216,7 @@ public class StoryPlay extends Group {
                 }
                 actor.addAction(seq);
             }
-            group.addActor(actor);
+            actorGroup.addActor(actor);
         }
 
         // if we're live, display the page's narration text
@@ -161,7 +226,7 @@ public class StoryPlay extends Group {
             nar.setPosition(40f, -40f);
             nar.setTouchable(Touchable.disabled);
             nar.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
-            group.addActor(nar);
+            actorGroup.addActor(nar);
         }
     }
 
@@ -219,7 +284,7 @@ public class StoryPlay extends Group {
 
     @Override
     public void addActor(Actor actor) {
-        group.addActor(actor);
+        actorGroup.addActor(actor);
         pages.get(currentPage).add(actor);
     }
 
