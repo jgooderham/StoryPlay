@@ -1,6 +1,8 @@
 package com.segroup9.storyplay;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -16,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import java.util.HashMap;
 
@@ -35,6 +38,7 @@ public class StoryPlay extends Group {
 
     private final Actor bgColorActor;
     private final HashMap<String, ParticleEffectPool> particleFX;
+    private Music narrSound = null;
 
     public StoryPlay(TextureAtlas atlas, Skin skin, HashMap<String, ParticleEffectPool> particles) {
         textureAtlas = atlas;
@@ -248,6 +252,22 @@ public class StoryPlay extends Group {
             nar.setTouchable(Touchable.disabled);
             nar.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
             actorGroup.addActor(nar);
+
+            // dispose of previous narration audio
+            if (narrSound != null) {
+                narrSound.stop();
+                narrSound.dispose();
+                narrSound = null;
+            }
+
+            // load and play a new narration audio
+            try {
+                FileHandle file = Gdx.files.internal("audio/" + page.name + ".mp3");
+                narrSound = Gdx.audio.newMusic(file);
+                narrSound.play();
+            } catch ( GdxRuntimeException e ) {
+                // just ignore if no file found for this page
+            }
         }
     }
 
