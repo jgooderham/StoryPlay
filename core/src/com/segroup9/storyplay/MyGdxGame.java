@@ -67,7 +67,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 
 		// load all the particle effects
 		particleFX = new HashMap<String, ParticleEffectPool>();
-		String[] particleFiles = { "bigbubbles.p", "bubbles.p", "fish.p" };
+		String[] particleFiles = { "bigbubbles.p", "bubbles.p", "fish.p", "elephants.p" };
 		for (String filename : particleFiles) {
 			ParticleEffect p = new ParticleEffect();
 			p.load(Gdx.files.internal("particleFX/" + filename), atlas);

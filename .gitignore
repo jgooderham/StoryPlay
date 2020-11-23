@@ -6,3 +6,4 @@ core/build/*
 local.properties
 android/build/*
 android/libs/*
+android/debug/*
