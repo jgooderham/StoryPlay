@@ -162,6 +162,10 @@ public class StoryPlay extends Group {
         } else
             bgColorActor.setColor(page.backgroundColor);
 
+        // factors to resize authored coords to device coords
+        float w_factor = (float)Gdx.graphics.getWidth() / (float)MyGdxGame.SCREEN_WIDTH;
+        float h_factor = (float)Gdx.graphics.getHeight() / (float)MyGdxGame.SCREEN_HEIGHT;
+
         // load page actors to stage and initialize
         for (final StoryActorDef actorDef : page.actorDefs) {
             final Actor actor;
@@ -186,7 +190,7 @@ public class StoryPlay extends Group {
             actor.setUserObject(actorDef);
             actor.setOrigin(Align.center); // center actor origin (default is lower left corner)
             actor.setName(actorDef.imageName);
-            actor.setPosition(actorDef.posX, actorDef.posY);
+            actor.setPosition(actorDef.posX * w_factor, actorDef.posY * h_factor);
             actor.setRotation(actorDef.rotation);
             actor.setScale(actorDef.scale, Math.abs(actorDef.scale));
             actor.setColor(actorDef.color);
@@ -325,9 +329,12 @@ public class StoryPlay extends Group {
         json.toJson(pages, Gdx.files.local("storyplay.json"));
     }
 
-    public void loadFromFile() {
+    public void loadFromFile(boolean desktop) {
         Json json = new Json();
-        pages = json.fromJson(Array.class, Gdx.files.local("storyPlay.json"));
+        if (desktop)
+            pages = json.fromJson(Array.class, Gdx.files.local("storyplay.json"));
+        else
+            pages = json.fromJson(Array.class, Gdx.files.internal("storyplay.json"));
         loadPageActors();
     }
 }

@@ -2,6 +2,7 @@
 .idea/*
 .gradle/*
 desktop/build/*
-core/build/libs/core-1.0.jar
-core/build/tmp/jar/MANIFEST.MF
+core/build/*
 local.properties
+android/build/*
+android/libs/*

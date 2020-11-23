@@ -24,6 +24,9 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import java.util.HashMap;
 
 public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
+	public static int SCREEN_WIDTH = 1280;
+	public static int SCREEN_HEIGHT = 800;
+
 	Stage stage;
 	StoryPlay storyPlay;
 	TextureAtlas atlas;
@@ -83,7 +86,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		storyPlay = new StoryPlay(atlas, skin, particleFX);
 		storyPlay.setLive(!designerMode);
 		try {
-			storyPlay.loadFromFile();
+			storyPlay.loadFromFile(designerMode);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();

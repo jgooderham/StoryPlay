@@ -22,7 +22,7 @@ public class DesignerToolsTable extends Table {
         reloadFileBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                storyPlay.loadFromFile();
+                storyPlay.loadFromFile(true);
             }
         });
         add(reloadFileBtn);
