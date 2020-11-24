@@ -23,6 +23,12 @@ public class ActionDef {
 
     public ActionDef() {}
 
+    public void set(ActionDef from) {
+        type = from.type;
+        System.arraycopy(from.params, 0, params, 0, params.length);
+        interpType = from.interpType;
+    }
+
     public Action getAction() {
         Interpolation interp;
         switch (interpType) {

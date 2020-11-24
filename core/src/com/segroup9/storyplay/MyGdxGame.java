@@ -27,6 +27,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	public static int SCREEN_WIDTH = 1280;
 	public static int SCREEN_HEIGHT = 800;
 	public static Color copyboardColor = new Color();
+	public static ActionDef copyboardAction = new ActionDef();
 
 	Stage stage;
 	StoryPlay storyPlay;
@@ -225,6 +226,20 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 					actionsList.setItems(actionsList.getItems()); // must re-set items to validate list display
 				}
 			});
+			TextButton actionCopyBtn = new TextButton("Copy Action", skin);
+			actionCopyBtn.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					copyboardAction.set(actionsList.getSelected());
+				}
+			});
+			TextButton actionPasteBtn = new TextButton("Paste Action", skin);
+			actionPasteBtn.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					actionsList.getSelected().set(copyboardAction);
+				}
+			});
 
 			targetPageTF = new TextField("", skin);
 			targetPageTF.addCaptureListener(new ChangeListener() {
@@ -264,6 +279,9 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 			t.add(actionTypeSB);
 			t.row().colspan(2);
 			t.add(actionParamsTbl);
+			t.row().expandX().fill().pad(2);
+			t.add(actionCopyBtn);
+			t.add(actionPasteBtn);
 			t.row().expandX().fill().pad(2);
 			lbl = new Label("Target Page:", skin);
 			lbl.setAlignment(Align.right);
