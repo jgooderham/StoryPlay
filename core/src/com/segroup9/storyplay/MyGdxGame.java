@@ -79,7 +79,8 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		// load the ui skin graphics, should only need this for designer mode once narration is added later
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		// no nice way to resize fonts within the skin file so we do it here for the narration style...
-		skin.getFont("font-narration").getData().setScale(0.5f,0.5f);
+		float screen_factor = 0.9f * ((float)Gdx.graphics.getHeight() / (float)SCREEN_HEIGHT);
+		skin.getFont("font-narration").getData().setScale(screen_factor,screen_factor);
 
 		designerMode = Gdx.app.getType() == Application.ApplicationType.Desktop;
 

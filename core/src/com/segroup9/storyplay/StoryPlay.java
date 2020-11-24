@@ -130,8 +130,10 @@ public class StoryPlay extends Group {
     }
 
     public void setLive(boolean isLive) {
-        if (live && !isLive)
+        if (live && !isLive) {
             setAvatar();
+            playNarration("");
+        }
         live = isLive;
         liveGroup.setVisible(isLive);
         gotoPage(currentPage);

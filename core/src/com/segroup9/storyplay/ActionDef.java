@@ -97,8 +97,9 @@ public class ActionDef {
             case Sway:
                 x = 0.5f * params[2];
                 c = params[3] == -1 ? (int)params[3] : (int)(params[3] / params[2]);
-                action = Actions.repeat(c, Actions.sequence(Actions.rotateBy(params[1], x, interp),
-                        Actions.rotateBy(-params[1], x, interp)));
+                action = Actions.sequence(Actions.delay(params[0]),
+                        Actions.repeat(c, Actions.sequence(Actions.rotateBy(params[1], x, interp),
+                        Actions.rotateBy(-params[1], x, interp))));
                 break;
             case Bob:
                 x = 0.5f * params[2];
