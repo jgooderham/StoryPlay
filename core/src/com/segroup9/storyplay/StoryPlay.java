@@ -169,6 +169,7 @@ public class StoryPlay extends Group {
         // factors to resize authored coords to device coords
         float w_factor = (float)Gdx.graphics.getWidth() / (float)MyGdxGame.SCREEN_WIDTH;
         float h_factor = (float)Gdx.graphics.getHeight() / (float)MyGdxGame.SCREEN_HEIGHT;
+        boolean endPage = false;
 
         // load page actors to stage and initialize
         for (final StoryActorDef actorDef : page.actorDefs) {
@@ -206,7 +207,7 @@ public class StoryPlay extends Group {
                 for (ActionDef actionDef : actorDef.actionDefs)
                     seq.addAction(actionDef.getAction());
 
-                // if it's
+                // if it's a particle effect, add an action to start the effect after its other actions are complete
                 if (actor instanceof ParticleEffectActor)
                     seq.addAction(Actions.run(new Runnable() {
                                                   @Override
@@ -218,6 +219,10 @@ public class StoryPlay extends Group {
 
                 // if actor has a target page, make it a button that links to said page
                 if (!"".equals(actorDef.targetPage)) {
+
+                    // determine page is an end page if it has a button that leads to "start" and isn't the "intro" page
+                    if ("start".equals(actorDef.targetPage) && !"intro".equals(page.name))
+                        endPage = true;
 
                     // disable actor touch until after other actions have completed
                     actor.setTouchable(Touchable.disabled);
@@ -253,21 +258,35 @@ public class StoryPlay extends Group {
             nar.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
             actorGroup.addActor(nar);
 
-            // dispose of previous narration audio
-            if (narrSound != null) {
-                narrSound.stop();
-                narrSound.dispose();
-                narrSound = null;
+            // play narration and setup restart narration line for end pages (pages with no spawned buttons)
+            playNarration("audio/" + page.name + ".mp3");
+            if (narrSound != null && endPage) {
+                System.out.println("endpage");
+                narrSound.setOnCompletionListener(new Music.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(Music music) {
+                        playNarration("audio/whn" + MathUtils.random(1, 12) + ".mp3");
+                    }
+                });
             }
+        }
+    }
 
-            // load and play a new narration audio
-            try {
-                FileHandle file = Gdx.files.internal("audio/" + page.name + ".mp3");
-                narrSound = Gdx.audio.newMusic(file);
-                narrSound.play();
-            } catch ( GdxRuntimeException e ) {
-                // just ignore if no file found for this page
-            }
+    private void playNarration(String filename) {
+        // dispose of previous narration audio
+        if (narrSound != null) {
+            narrSound.stop();
+            narrSound.dispose();
+            narrSound = null;
+        }
+
+        // load and play a new narration audio
+        try {
+            FileHandle file = Gdx.files.internal(filename);
+            narrSound = Gdx.audio.newMusic(file);
+            narrSound.play();
+        } catch ( GdxRuntimeException e ) {
+            // just ignore if no file found for this page
         }
     }
 
