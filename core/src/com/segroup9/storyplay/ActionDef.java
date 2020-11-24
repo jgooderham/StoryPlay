@@ -12,12 +12,14 @@ import com.badlogic.gdx.utils.Align;
 
 public class ActionDef {
 
-    enum ActionType { Delay, MoveTo, FadeIn, FadeOut, Sway, Bob };
+    enum ActionType { Delay, MoveTo, MoveBy, FadeIn, FadeOut, Sway, Bob, ColorTo };
     ActionType type = ActionType.Delay;
     float[] params = new float[6];
     enum InterpType { Linear, Smooth, Smooth2, Smoother, Bounce, BounceIn, BounceOut, Elastic, ElasticIn, ElasticOut,
         Exp, ExpIn, ExpOut, Pow, PowIn, PowOut, Swing, SwingIn, SwingOut };
     InterpType interpType = InterpType.Linear;
+
+    static Color tempColor = new Color();
 
     public ActionDef() {}
 
@@ -103,12 +105,21 @@ public class ActionDef {
                         Actions.moveTo(params[1] * Gdx.graphics.getWidth(),
                                 params[2] * Gdx.graphics.getHeight(), params[3], interp));
                 break;
+            case MoveBy:
+                action = Actions.sequence(Actions.delay(params[0]),
+                        Actions.moveBy(params[1] * Gdx.graphics.getWidth(),
+                                params[2] * Gdx.graphics.getHeight(), params[3], interp));
+                break;
             case FadeIn:
                 action = Actions.sequence(Actions.alpha(0), Actions.delay(params[0]),
                         Actions.fadeIn(params[1], interp));
                 break;
             case FadeOut:
                 action = Actions.sequence(Actions.delay(params[0]), Actions.fadeOut(params[1], interp));
+                break;
+            case ColorTo:
+                action = Actions.sequence(Actions.delay(params[0]),
+                        Actions.color(tempColor.set(params[2], params[3], params[4], params[5]), params[1], interp));
                 break;
             default:
                 action = Actions.delay(params[0]);
@@ -126,7 +137,12 @@ public class ActionDef {
                 paramLabels = new String[] {"Delay:", "Duration:"};
                 hasInterp = true;
                 break;
+            case ColorTo:
+                paramLabels = new String[] {"Delay:", "Duration:", "Red:", "Green:", "Blue:", "Alpha:"};
+                hasInterp = true;
+                break;
             case MoveTo:
+            case MoveBy:
                 paramLabels = new String[] {"Delay:", "X:", "Y:", "Duration:"};
                 hasInterp = true;
                 break;
@@ -191,11 +207,16 @@ public class ActionDef {
     public String toString() {
         switch (type) {
             case MoveTo:
+            case MoveBy:
                 return "Wait " + params[0] + " secs then " + type + ": (" + params[1] + ", " + params[2] +
                         ") taking " + params[3] + " secs";
             case FadeIn:
             case FadeOut:
                 return "Wait " + params[0] + " secs then " + type + " for " + params[1] + " secs";
+            case ColorTo:
+                return "Wait " + params[0] + " secs then change " + type + ": " +
+                        params[2] + ", " + params[3] + ", " + params[4] + ", " + params[5] +
+                        " over " + params[1] + " secs";
             case Sway:
             case Bob:
                 return "Wait " + params[0] + " secs then " + type + " for" +
