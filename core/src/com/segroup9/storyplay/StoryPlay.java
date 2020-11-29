@@ -214,7 +214,8 @@ public class StoryPlay extends Group {
                     AnimationState state = new AnimationState(asd);
                     state.setAnimation(0, "animation", true);
                     avatarSkeleton = new SkeletonActor(skelRenderer, skel, state);
-                    avatarSkeleton.getSkeleton().setScale(actorDef.scale, actorDef.scale);
+                    avatarSkeleton.getSkeleton().setScale(actorDef.scale, Math.abs(actorDef.scale));
+                    avatarSkeleton.getSkeleton().setColor(actorDef.color);
                     actor = avatarSkeleton;
                 } else {
                     actor = new TextActor(actorDef.text, skin);

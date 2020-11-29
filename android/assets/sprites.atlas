@@ -6,142 +6,142 @@ filter: Linear,Linear
 repeat: none
 anchor
   rotate: false
-  xy: 818, 447
+  xy: 336, 54
   size: 189, 200
   orig: 189, 200
   offset: 0, 0
   index: -1
+back
+  rotate: false
+  xy: 364, 256
+  size: 128, 121
+  orig: 128, 121
+  offset: 0, 0
+  index: -1
+bird
+  rotate: false
+  xy: 765, 408
+  size: 250, 160
+  orig: 250, 160
+  offset: 0, 0
+  index: -1
 block
   rotate: false
-  xy: 516, 699
+  xy: 2, 14
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
   index: -1
 bubble
   rotate: false
-  xy: 927, 948
+  xy: 839, 31
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 cave
   rotate: false
-  xy: 2, 717
+  xy: 2, 725
   size: 589, 295
   orig: 589, 295
   offset: 0, 0
   index: -1
 diver
   rotate: false
-  xy: 2, 43
+  xy: 385, 379
   size: 200, 344
   orig: 200, 344
   offset: 0, 0
   index: -1
 elephant
   rotate: false
-  xy: 593, 790
+  xy: 2, 32
   size: 332, 222
   orig: 332, 222
   offset: 0, 0
   index: -1
-flashlight
-  rotate: false
-  xy: 364, 403
-  size: 150, 312
-  orig: 150, 312
-  offset: 0, 0
-  index: -1
 fossil
   rotate: false
-  xy: 818, 316
+  xy: 587, 581
   size: 200, 129
   orig: 200, 129
   offset: 0, 0
   index: -1
 head0
   rotate: false
-  xy: 568, 10
+  xy: 655, 2
   size: 182, 134
   orig: 182, 134
   offset: 0, 0
   index: -1
+head4
+  rotate: false
+  xy: 839, 97
+  size: 183, 161
+  orig: 183, 161
+  offset: 0, 0
+  index: -1
 head5
   rotate: false
-  xy: 812, 174
+  xy: 796, 570
   size: 210, 140
   orig: 210, 140
   offset: 0, 0
   index: -1
-head9
+head7
   rotate: false
-  xy: 332, 11
-  size: 234, 133
-  orig: 234, 133
+  xy: 796, 260
+  size: 191, 146
+  orig: 191, 146
   offset: 0, 0
   index: -1
-helicopter
+img-missing
   rotate: false
-  xy: 516, 453
-  size: 300, 194
-  orig: 300, 194
+  xy: 655, 138
+  size: 128, 128
+  orig: 128, 128
   offset: 0, 0
   index: -1
 mountains
   rotate: false
-  xy: 516, 342
+  xy: 494, 268
   size: 300, 109
   orig: 300, 109
   offset: 0, 0
   index: -1
-ram
-  rotate: false
-  xy: 204, 2
-  size: 100, 122
-  orig: 100, 122
-  offset: 0, 0
-  index: -1
-scuba
-  rotate: false
-  xy: 812, 36
-  size: 200, 136
-  orig: 200, 136
-  offset: 0, 0
-  index: -1
 shark
   rotate: false
-  xy: 593, 649
+  xy: 2, 584
   size: 381, 139
   orig: 381, 139
   offset: 0, 0
   index: -1
 shipwreck
   rotate: false
-  xy: 2, 389
+  xy: 2, 256
   size: 360, 326
   orig: 360, 326
   offset: 0, 0
   index: -1
 shovel
   rotate: false
-  xy: 634, 166
+  xy: 587, 394
   size: 176, 174
   orig: 176, 174
   offset: 0, 0
   index: -1
 squid
   rotate: false
-  xy: 204, 126
+  xy: 527, 5
   size: 126, 261
   orig: 126, 261
   offset: 0, 0
   index: -1
-sub
+submarine
   rotate: false
-  xy: 332, 146
-  size: 300, 194
-  orig: 300, 194
+  xy: 593, 712
+  size: 400, 308
+  orig: 400, 308
   offset: 0, 0
   index: -1
 
@@ -150,86 +150,79 @@ size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-back
+flashlight
   rotate: false
-  xy: 762, 207
-  size: 128, 121
-  orig: 128, 121
-  offset: 0, 0
-  index: -1
-bird
-  rotate: false
-  xy: 94, 315
-  size: 250, 160
-  orig: 250, 160
+  xy: 94, 2
+  size: 150, 312
+  orig: 150, 312
   offset: 0, 0
   index: -1
 head1
   rotate: false
-  xy: 94, 2
+  xy: 415, 227
   size: 182, 148
   orig: 182, 148
   offset: 0, 0
   index: -1
 head2
   rotate: false
-  xy: 539, 330
+  xy: 632, 365
   size: 191, 145
   orig: 191, 145
   offset: 0, 0
   index: -1
 head3
   rotate: false
-  xy: 448, 193
+  xy: 599, 229
   size: 182, 134
   orig: 182, 134
   offset: 0, 0
   index: -1
-head4
-  rotate: false
-  xy: 94, 152
-  size: 183, 161
-  orig: 183, 161
-  offset: 0, 0
-  index: -1
 head6
   rotate: false
-  xy: 732, 330
+  xy: 825, 365
   size: 184, 145
   orig: 184, 145
   offset: 0, 0
   index: -1
-head7
-  rotate: false
-  xy: 346, 329
-  size: 191, 146
-  orig: 191, 146
-  offset: 0, 0
-  index: -1
 head8
   rotate: false
-  xy: 278, 5
+  xy: 246, 6
   size: 182, 141
   orig: 182, 141
   offset: 0, 0
   index: -1
-img-missing
+head9
   rotate: false
-  xy: 632, 200
-  size: 128, 128
-  orig: 128, 128
+  xy: 396, 377
+  size: 234, 133
+  orig: 234, 133
+  offset: 0, 0
+  index: -1
+helicopter
+  rotate: false
+  xy: 94, 316
+  size: 300, 194
+  orig: 300, 194
   offset: 0, 0
   index: -1
 paw
   rotate: false
-  xy: 279, 148
+  xy: 246, 149
   size: 167, 165
   orig: 167, 165
   offset: 0, 0
   index: -1
+ram
+  rotate: false
+  xy: 783, 241
+  size: 100, 122
+  orig: 100, 122
+  offset: 0, 0
+  index: -1
 seaweed
   rotate: false
-  xy: 2, 33
+  xy: 2, 68
   size: 90, 442
   orig: 90, 442
   offset: 0, 0
