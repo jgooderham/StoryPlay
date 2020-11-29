@@ -6,203 +6,231 @@ filter: Linear,Linear
 repeat: none
 anchor
   rotate: false
-  xy: 556, 492
+  xy: 818, 447
   size: 189, 200
   orig: 189, 200
   offset: 0, 0
   index: -1
-bird
+block
   rotate: false
-  xy: 2, 143
-  size: 250, 160
-  orig: 250, 160
+  xy: 516, 699
+  size: 32, 16
+  orig: 32, 16
   offset: 0, 0
   index: -1
 bubble
   rotate: false
-  xy: 955, 956
+  xy: 927, 948
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 cave
   rotate: false
-  xy: 2, 725
+  xy: 2, 717
   size: 589, 295
   orig: 589, 295
   offset: 0, 0
   index: -1
+diver
+  rotate: false
+  xy: 2, 43
+  size: 200, 344
+  orig: 200, 344
+  offset: 0, 0
+  index: -1
 elephant
   rotate: false
-  xy: 2, 501
+  xy: 593, 790
   size: 332, 222
   orig: 332, 222
   offset: 0, 0
   index: -1
-head2
+flashlight
   rotate: false
-  xy: 570, 38
-  size: 191, 145
-  orig: 191, 145
-  offset: 0, 0
-  index: -1
-head4
-  rotate: false
-  xy: 385, 7
-  size: 183, 161
-  orig: 183, 161
-  offset: 0, 0
-  index: -1
-head5
-  rotate: false
-  xy: 556, 185
-  size: 210, 140
-  orig: 210, 140
-  offset: 0, 0
-  index: -1
-head7
-  rotate: false
-  xy: 664, 344
-  size: 191, 146
-  orig: 191, 146
-  offset: 0, 0
-  index: -1
-head9
-  rotate: false
-  xy: 428, 327
-  size: 234, 133
-  orig: 234, 133
-  offset: 0, 0
-  index: -1
-img-missing
-  rotate: false
-  xy: 857, 388
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-mountains
-  rotate: false
-  xy: 254, 170
-  size: 300, 109
-  orig: 300, 109
-  offset: 0, 0
-  index: -1
-paw
-  rotate: false
-  xy: 763, 18
-  size: 167, 165
-  orig: 167, 165
-  offset: 0, 0
-  index: -1
-scuba
-  rotate: false
-  xy: 768, 206
-  size: 200, 136
-  orig: 200, 136
-  offset: 0, 0
-  index: -1
-seaweed
-  rotate: false
-  xy: 336, 281
-  size: 90, 442
-  orig: 90, 442
-  offset: 0, 0
-  index: -1
-shark
-  rotate: false
-  xy: 2, 2
-  size: 381, 139
-  orig: 381, 139
-  offset: 0, 0
-  index: -1
-shipwreck
-  rotate: false
-  xy: 593, 694
-  size: 360, 326
-  orig: 360, 326
-  offset: 0, 0
-  index: -1
-shovel
-  rotate: false
-  xy: 747, 518
-  size: 176, 174
-  orig: 176, 174
-  offset: 0, 0
-  index: -1
-squid
-  rotate: false
-  xy: 428, 462
-  size: 126, 261
-  orig: 126, 261
-  offset: 0, 0
-  index: -1
-sub
-  rotate: false
-  xy: 2, 305
-  size: 300, 194
-  orig: 300, 194
-  offset: 0, 0
-  index: -1
-
-sprites2.png
-size: 512,512
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-back
-  rotate: false
-  xy: 372, 188
-  size: 128, 121
-  orig: 128, 121
+  xy: 364, 403
+  size: 150, 312
+  orig: 150, 312
   offset: 0, 0
   index: -1
 fossil
   rotate: false
-  xy: 186, 311
+  xy: 818, 316
   size: 200, 129
   orig: 200, 129
   offset: 0, 0
   index: -1
 head0
   rotate: false
-  xy: 188, 175
+  xy: 568, 10
   size: 182, 134
   orig: 182, 134
   offset: 0, 0
   index: -1
-head1
+head5
   rotate: false
-  xy: 2, 292
-  size: 182, 148
-  orig: 182, 148
+  xy: 812, 174
+  size: 210, 140
+  orig: 210, 140
   offset: 0, 0
   index: -1
-head3
+head9
   rotate: false
-  xy: 188, 39
-  size: 182, 134
-  orig: 182, 134
+  xy: 332, 11
+  size: 234, 133
+  orig: 234, 133
   offset: 0, 0
   index: -1
-head6
+helicopter
   rotate: false
-  xy: 2, 145
-  size: 184, 145
-  orig: 184, 145
+  xy: 516, 453
+  size: 300, 194
+  orig: 300, 194
   offset: 0, 0
   index: -1
-head8
+mountains
   rotate: false
-  xy: 2, 2
-  size: 182, 141
-  orig: 182, 141
+  xy: 516, 342
+  size: 300, 109
+  orig: 300, 109
   offset: 0, 0
   index: -1
 ram
   rotate: false
-  xy: 388, 318
+  xy: 204, 2
   size: 100, 122
   orig: 100, 122
+  offset: 0, 0
+  index: -1
+scuba
+  rotate: false
+  xy: 812, 36
+  size: 200, 136
+  orig: 200, 136
+  offset: 0, 0
+  index: -1
+shark
+  rotate: false
+  xy: 593, 649
+  size: 381, 139
+  orig: 381, 139
+  offset: 0, 0
+  index: -1
+shipwreck
+  rotate: false
+  xy: 2, 389
+  size: 360, 326
+  orig: 360, 326
+  offset: 0, 0
+  index: -1
+shovel
+  rotate: false
+  xy: 634, 166
+  size: 176, 174
+  orig: 176, 174
+  offset: 0, 0
+  index: -1
+squid
+  rotate: false
+  xy: 204, 126
+  size: 126, 261
+  orig: 126, 261
+  offset: 0, 0
+  index: -1
+sub
+  rotate: false
+  xy: 332, 146
+  size: 300, 194
+  orig: 300, 194
+  offset: 0, 0
+  index: -1
+
+sprites2.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+back
+  rotate: false
+  xy: 762, 207
+  size: 128, 121
+  orig: 128, 121
+  offset: 0, 0
+  index: -1
+bird
+  rotate: false
+  xy: 94, 315
+  size: 250, 160
+  orig: 250, 160
+  offset: 0, 0
+  index: -1
+head1
+  rotate: false
+  xy: 94, 2
+  size: 182, 148
+  orig: 182, 148
+  offset: 0, 0
+  index: -1
+head2
+  rotate: false
+  xy: 539, 330
+  size: 191, 145
+  orig: 191, 145
+  offset: 0, 0
+  index: -1
+head3
+  rotate: false
+  xy: 448, 193
+  size: 182, 134
+  orig: 182, 134
+  offset: 0, 0
+  index: -1
+head4
+  rotate: false
+  xy: 94, 152
+  size: 183, 161
+  orig: 183, 161
+  offset: 0, 0
+  index: -1
+head6
+  rotate: false
+  xy: 732, 330
+  size: 184, 145
+  orig: 184, 145
+  offset: 0, 0
+  index: -1
+head7
+  rotate: false
+  xy: 346, 329
+  size: 191, 146
+  orig: 191, 146
+  offset: 0, 0
+  index: -1
+head8
+  rotate: false
+  xy: 278, 5
+  size: 182, 141
+  orig: 182, 141
+  offset: 0, 0
+  index: -1
+img-missing
+  rotate: false
+  xy: 632, 200
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+paw
+  rotate: false
+  xy: 279, 148
+  size: 167, 165
+  orig: 167, 165
+  offset: 0, 0
+  index: -1
+seaweed
+  rotate: false
+  xy: 2, 33
+  size: 90, 442
+  orig: 90, 442
   offset: 0, 0
   index: -1
