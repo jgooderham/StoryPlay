@@ -12,12 +12,13 @@ import com.badlogic.gdx.utils.Align;
 
 public class ActionDef {
 
-    enum ActionType { Delay, MoveTo, MoveBy, FadeIn, FadeOut, Sway, Bob, ColorTo };
+    enum ActionType { Delay, MoveTo, MoveBy, FadeIn, FadeOut, Sway, Bob, ColorTo, SetAnim };
     ActionType type = ActionType.Delay;
     float[] params = new float[6];
     enum InterpType { Linear, Smooth, Smooth2, Smoother, Bounce, BounceIn, BounceOut, Elastic, ElasticIn, ElasticOut,
         Exp, ExpIn, ExpOut, Pow, PowIn, PowOut, Swing, SwingIn, SwingOut };
     InterpType interpType = InterpType.Linear;
+    String text;
 
     static Color tempColor = new Color();
 
@@ -27,6 +28,7 @@ public class ActionDef {
         type = from.type;
         System.arraycopy(from.params, 0, params, 0, params.length);
         interpType = from.interpType;
+        text = from.text;
     }
 
     public Action getAction() {
@@ -109,13 +111,13 @@ public class ActionDef {
                 break;
             case MoveTo:
                 action = Actions.sequence(Actions.delay(params[0]),
-                        Actions.moveTo(params[1] * Gdx.graphics.getWidth(),
-                                params[2] * Gdx.graphics.getHeight(), params[3], interp));
+                        Actions.moveTo(params[1] * MyGdxGame.SCREEN_WIDTH,
+                                params[2] * MyGdxGame.SCREEN_HEIGHT, params[3], interp));
                 break;
             case MoveBy:
                 action = Actions.sequence(Actions.delay(params[0]),
-                        Actions.moveBy(params[1] * Gdx.graphics.getWidth(),
-                                params[2] * Gdx.graphics.getHeight(), params[3], interp));
+                        Actions.moveBy(params[1] * MyGdxGame.SCREEN_WIDTH,
+                                params[2] * MyGdxGame.SCREEN_HEIGHT, params[3], interp));
                 break;
             case FadeIn:
                 action = Actions.sequence(Actions.alpha(0), Actions.delay(params[0]),
@@ -128,6 +130,11 @@ public class ActionDef {
                 action = Actions.sequence(Actions.delay(params[0]),
                         Actions.color(tempColor.set(params[2], params[3], params[4], params[5]), params[1], interp));
                 break;
+            case SetAnim:
+                SetAnimAction a = Actions.action(SetAnimAction.class);
+                a.animName = text;
+                action = Actions.sequence(Actions.delay(params[0]), a);
+                break;
             default:
                 action = Actions.delay(params[0]);
         }
@@ -137,6 +144,7 @@ public class ActionDef {
     // create ui controls to edit the parameters for a particular action
     public Table getParamControls(Skin skin) {
         boolean hasInterp = false;
+        boolean hasText = false;
         String[] paramLabels = new String[] {"Duration:"};
         switch (type) {
             case FadeIn:
@@ -158,6 +166,10 @@ public class ActionDef {
                 paramLabels = new String[] {"Delay:", "Amount:", "Speed:", "Duration"};
                 hasInterp = true;
                 break;
+            case SetAnim:
+                paramLabels = new String[] {"Delay:"};
+                hasText = true;
+                break;
         }
         // create the appropriate number of parameter boxes for the desired action type
         Table t = new Table();
@@ -178,6 +190,22 @@ public class ActionDef {
             });
             t.row().expand().fill().pad(2);
             Label lbl = new Label(paramLabels[i], skin);
+            lbl.setAlignment(Align.right);
+            t.add(lbl);
+            t.add(tf);
+        }
+
+        // some actions need a general text field
+        if (hasText) {
+            TextField tf = new TextField(text, skin);
+            tf.addCaptureListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    text = ((TextField) actor).getText();
+                }
+            });
+            t.row().expand().fill().pad(2);
+            Label lbl = new Label("Animation Name:", skin);
             lbl.setAlignment(Align.right);
             t.add(lbl);
             t.add(tf);
@@ -228,6 +256,8 @@ public class ActionDef {
             case Bob:
                 return "Wait " + params[0] + " secs then " + type + " for" +
                         (params[3] == -1 ? "ever" : " " + params[3] + " secs");
+            case SetAnim:
+                return "Wait " + params[0] + " secs then set animation to " + text;
             default:
                 return "Wait " + params[0];
         }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -20,7 +21,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
+import com.esotericsoftware.spine.SkeletonBinary;
+import com.esotericsoftware.spine.SkeletonData;
+
 import java.util.HashMap;
 
 public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
@@ -35,6 +40,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 	Array<AtlasRegion> atlasRegions;
 	Skin skin;
 	HashMap<String, ParticleEffectPool> particleFX;
+	HashMap<String, SkeletonData> spineSkeletons;
 
 	boolean designerMode = false;
 	Actor selectedActor;
@@ -76,17 +82,25 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 			particleFX.put(filename, new ParticleEffectPool(p, 5, 5));
 		}
 
+		// load all the spine skeletons
+		spineSkeletons = new HashMap<>();
+		SkeletonBinary json = new SkeletonBinary(atlas);
+		String[] skeletonFiles = { "helicopter.skel", "diver.skel" };
+		for(String filename : skeletonFiles) {
+			SkeletonData skel = json.readSkeletonData(Gdx.files.internal("spine/" + filename));
+			spineSkeletons.put(filename, skel);
+		}
+
 		// load the ui skin graphics, should only need this for designer mode once narration is added later
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		// no nice way to resize fonts within the skin file so we do it here for the narration style...
-		float screen_factor = 0.9f * ((float)Gdx.graphics.getHeight() / (float)SCREEN_HEIGHT);
-		skin.getFont("font-narration").getData().setScale(screen_factor,screen_factor);
+		skin.getFont("font-narration").getData().setScale(0.7f, 0.7f);
 
 		designerMode = Gdx.app.getType() == Application.ApplicationType.Desktop;
 
 		// setup the stage and storyplay
-		stage = new Stage(new ScreenViewport());
-		storyPlay = new StoryPlay(atlas, skin, particleFX);
+		stage = new Stage(new ScalingViewport(Scaling.fit, MyGdxGame.SCREEN_WIDTH, MyGdxGame.SCREEN_HEIGHT), new PolygonSpriteBatch());
+		storyPlay = new StoryPlay(atlas, skin, particleFX, spineSkeletons);
 		storyPlay.setLive(!designerMode);
 		try {
 			storyPlay.loadFromFile(designerMode);

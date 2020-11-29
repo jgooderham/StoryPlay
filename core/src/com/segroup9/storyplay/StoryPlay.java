@@ -15,11 +15,16 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
+import com.esotericsoftware.spine.*;
+import com.esotericsoftware.spine.attachments.RegionAttachment;
+import com.esotericsoftware.spine.utils.SkeletonActor;
+
 import java.util.HashMap;
 
 public class StoryPlay extends Group {
@@ -38,12 +43,18 @@ public class StoryPlay extends Group {
 
     private final Actor bgColorActor;
     private final HashMap<String, ParticleEffectPool> particleFX;
+    private final HashMap<String, SkeletonData> spineFX;
     private Music narrSound = null;
 
-    public StoryPlay(TextureAtlas atlas, Skin skin, HashMap<String, ParticleEffectPool> particles) {
+    private final SkeletonRenderer skelRenderer = new SkeletonRenderer();
+    private SkeletonActor avatarSkeleton;
+
+    public StoryPlay(TextureAtlas atlas, Skin skin, HashMap<String, ParticleEffectPool> particles,
+                     HashMap<String, SkeletonData> spineSkeletons) {
         textureAtlas = atlas;
         this.skin = skin;
         particleFX = particles;
+        spineFX = spineSkeletons;
 
         actorGroup = new Group();
         bgColorActor = new Actor();
@@ -54,7 +65,7 @@ public class StoryPlay extends Group {
 
         liveGroup = new Group();
         liveGroup.setTouchable(Touchable.childrenOnly);
-        liveGroup.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        liveGroup.setSize(MyGdxGame.SCREEN_WIDTH, MyGdxGame.SCREEN_HEIGHT);
         backBtn = new Image(atlas.findRegion("back"));
         backBtn.setScale(0.5f);
         backBtn.setOrigin(Align.center);
@@ -101,7 +112,7 @@ public class StoryPlay extends Group {
             liveGroup.addActor(avatarChoice);
         }
         TextActor title = new TextActor("Choose Your Character", skin);
-        title.setPosition(0.5f * (Gdx.graphics.getWidth() - title.getWidth()), 0.8f * Gdx.graphics.getHeight());
+        title.setPosition(0.5f * (MyGdxGame.SCREEN_WIDTH - title.getWidth()), 0.8f * MyGdxGame.SCREEN_HEIGHT);
         title.setColor(1, 1, 0, 1);
         title.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
         liveGroup.addActor(title);
@@ -127,6 +138,16 @@ public class StoryPlay extends Group {
         backBtn.setPosition(10 + avatarBtn.getX() + 0.5f * (avatarBtn.getWidth() + backBtn.getWidth()),
                 avatarBtn.getY());
         actorGroup.addAction( Actions.fadeIn(0.5f));
+
+        // update any skeleton actor with the new avatar head
+        if (avatarSkeleton != null) {
+            Slot head = avatarSkeleton.getSkeleton().findSlot("head");
+            if (head != null) {
+                RegionAttachment attach = (RegionAttachment)head.getAttachment();
+                if (attach != null)
+                    attach.setRegion(textureAtlas.findRegion("head" + avatarIdx));
+            }
+        }
     }
 
     public void setLive(boolean isLive) {
@@ -168,11 +189,6 @@ public class StoryPlay extends Group {
         } else
             bgColorActor.setColor(page.backgroundColor);
 
-        // factors to resize authored coords to device coords
-        float x_margin = (float)MyGdxGame.SCREEN_WIDTH - (float)Gdx.graphics.getWidth();
-        x_margin = x_margin > 0 ? 0.5f * x_margin : 0;
-        float w_factor = (float)Gdx.graphics.getWidth() / (float)MyGdxGame.SCREEN_WIDTH;
-        float h_factor = (float)Gdx.graphics.getHeight() / (float)MyGdxGame.SCREEN_HEIGHT;
         boolean endPage = false;
 
         // load page actors to stage and initialize
@@ -191,6 +207,15 @@ public class StoryPlay extends Group {
                     ParticleEffectActor p = new ParticleEffectActor(particleFX.get(actorDef.text).obtain());
                     p.stop();
                     actor = p;
+                } else if (live && spineFX.containsKey(actorDef.text)) {
+                    Skeleton skel = new Skeleton(spineFX.get(actorDef.text));
+                    AnimationStateData asd = new AnimationStateData(skel.getData());
+                    asd.setDefaultMix(0.3f);
+                    AnimationState state = new AnimationState(asd);
+                    state.setAnimation(0, "animation", true);
+                    avatarSkeleton = new SkeletonActor(skelRenderer, skel, state);
+                    avatarSkeleton.getSkeleton().setScale(actorDef.scale, actorDef.scale);
+                    actor = avatarSkeleton;
                 } else {
                     actor = new TextActor(actorDef.text, skin);
                 }
@@ -199,7 +224,7 @@ public class StoryPlay extends Group {
             actor.setUserObject(actorDef);
             actor.setOrigin(Align.center); // center actor origin (default is lower left corner)
             actor.setName(actorDef.imageName);
-            actor.setPosition(x_margin + actorDef.posX * w_factor, actorDef.posY * h_factor);
+            actor.setPosition(actorDef.posX, actorDef.posY);
             actor.setRotation(actorDef.rotation);
             actor.setScale(actorDef.scale, Math.abs(actorDef.scale));
             actor.setColor(actorDef.color);
@@ -256,7 +281,7 @@ public class StoryPlay extends Group {
         // if we're live, display the page's narration text
         if (live) {
             TextArea nar = new TextArea(getPageNarration(), skin, "narration");
-            nar.setSize(Gdx.graphics.getWidth() - 80f, Gdx.graphics.getHeight());
+            nar.setSize(MyGdxGame.SCREEN_WIDTH - 80f, MyGdxGame.SCREEN_HEIGHT);
             nar.setPosition(40f, -40f);
             nar.setTouchable(Touchable.disabled);
             nar.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
@@ -265,7 +290,6 @@ public class StoryPlay extends Group {
             // play narration and setup restart narration line for end pages (pages with no spawned buttons)
             playNarration("audio/" + page.name + ".mp3");
             if (narrSound != null && endPage) {
-                System.out.println("endpage");
                 narrSound.setOnCompletionListener(new Music.OnCompletionListener() {
                     @Override
                     public void onCompletion(Music music) {
