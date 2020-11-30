@@ -85,7 +85,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 		// load all the spine skeletons
 		spineSkeletons = new HashMap<>();
 		SkeletonBinary json = new SkeletonBinary(atlas);
-		String[] skeletonFiles = { "helicopter.skel", "diver.skel", "sub.skel" };
+		String[] skeletonFiles = { "helicopter.skel", "diver.skel", "sub.skel", "bird.skel" };
 		for(String filename : skeletonFiles) {
 			SkeletonData skel = json.readSkeletonData(Gdx.files.internal("spine/" + filename));
 			spineSkeletons.put(filename, skel);
