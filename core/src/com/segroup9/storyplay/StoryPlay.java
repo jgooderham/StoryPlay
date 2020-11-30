@@ -37,14 +37,14 @@ public class StoryPlay extends Group {
 
     public static int HEAD_COUNT = 10;
     public Group liveGroup;
-    private Image avatarBtn;
-    private Image backBtn;
+    private Image avatarBtn, backBtn, muteBtn;
     private int avatarIdx = 0;
 
     private final Actor bgColorActor;
     private final HashMap<String, ParticleEffectPool> particleFX;
     private final HashMap<String, SkeletonData> spineFX;
     private Music narrSound = null;
+    private boolean muted = false;
 
     private final SkeletonRenderer skelRenderer = new SkeletonRenderer();
     private SkeletonActor avatarSkeleton;
@@ -67,7 +67,7 @@ public class StoryPlay extends Group {
         liveGroup.setTouchable(Touchable.childrenOnly);
         liveGroup.setSize(MyGdxGame.SCREEN_WIDTH, MyGdxGame.SCREEN_HEIGHT);
         backBtn = new Image(atlas.findRegion("back"));
-        backBtn.setScale(0.5f);
+        backBtn.setScale(0.8f);
         backBtn.setOrigin(Align.center);
         backBtn.setTouchable(Touchable.enabled);
         backBtn.addCaptureListener(new ClickListener() {
@@ -77,14 +77,37 @@ public class StoryPlay extends Group {
                 return true;
             }
         });
+        muteBtn = new Image(atlas.findRegion("speaker"));
+        muteBtn.setOrigin(Align.center);
+        muteBtn.setTouchable(Touchable.enabled);
+        muteBtn.addCaptureListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                toggleMute();
+                return true;
+            }
+        });
+        muted = true;
+        toggleMute();
         setAvatar();
         super.addActor(liveGroup);
+    }
+
+    private void toggleMute() {
+        muted = !muted;
+        if (muted)
+            playNarration("");
+        if (muted)
+            muteBtn.setColor(1, 0, 0, 0.5f);
+        else
+            muteBtn.setColor(0.3f, 0.3f, 0.3f, 0.5f);
     }
 
     private void pickAvatar() {
         actorGroup.addAction( Actions.fadeOut(0.2f));
         avatarBtn.addAction( Actions.fadeOut(0.2f));
         backBtn.addAction( Actions.fadeOut(0.2f));
+        muteBtn.addAction( Actions.fadeOut(0.2f));
         for (int i = 0; i < HEAD_COUNT; i++) {
             float y = (0.2f + (i/5) * 0.3f) * liveGroup.getHeight();
             float x = (0.1f + (i%5) * 0.2f * 0.8f) * liveGroup.getWidth();
@@ -121,7 +144,6 @@ public class StoryPlay extends Group {
     private void setAvatar() {
         liveGroup.clearChildren();
         avatarBtn = new Image(textureAtlas.findRegion("head" + avatarIdx));
-        avatarBtn.setPosition(10, 10);
         avatarBtn.setScale(0.8f);
         avatarBtn.setTouchable(Touchable.enabled);
         avatarBtn.addCaptureListener(new ClickListener() {
@@ -131,12 +153,16 @@ public class StoryPlay extends Group {
                 return true;
             }
         });
-        liveGroup.addActor(avatarBtn);
-        avatarBtn.addAction( Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
         liveGroup.addActor(backBtn);
         backBtn.addAction( Actions.sequence(Actions.alpha(0), Actions.alpha(0.5f, 0.5f)));
-        backBtn.setPosition(10 + avatarBtn.getX() + 0.5f * (avatarBtn.getWidth() + backBtn.getWidth()),
-                avatarBtn.getY());
+        liveGroup.addActor(avatarBtn);
+        avatarBtn.addAction( Actions.sequence(Actions.alpha(0), Actions.alpha(0.5f, 0.5f)));
+        avatarBtn.setPosition(10 + backBtn.getX() + 0.5f * (backBtn.getWidth() + avatarBtn.getWidth()),
+                10 + backBtn.getY());
+        muteBtn.addAction( Actions.sequence(Actions.alpha(0), Actions.alpha(0.5f, 0.5f)));
+        muteBtn.setPosition(20 + avatarBtn.getX() + 0.5f * (avatarBtn.getWidth() + backBtn.getWidth()),
+                10 + avatarBtn.getY());
+        liveGroup.addActor(muteBtn);
         actorGroup.addAction( Actions.fadeIn(0.5f));
 
         // update any skeleton actor with the new avatar head
@@ -289,7 +315,8 @@ public class StoryPlay extends Group {
             actorGroup.addActor(nar);
 
             // play narration and setup restart narration line for end pages (pages with no spawned buttons)
-            playNarration("audio/" + page.name + ".mp3");
+            if (!muted)
+                playNarration("audio/" + page.name + ".mp3");
             if (narrSound != null && endPage) {
                 narrSound.setOnCompletionListener(new Music.OnCompletionListener() {
                     @Override
