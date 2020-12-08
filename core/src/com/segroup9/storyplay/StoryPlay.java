@@ -100,7 +100,7 @@ public class StoryPlay extends Group {
         if (muted)
             muteBtn.setColor(1, 0, 0, 0.5f);
         else
-            muteBtn.setColor(0.3f, 0.3f, 0.3f, 0.5f);
+            muteBtn.setColor(0.1f, 0.1f, 0.1f, 0.5f);
     }
 
     private void pickAvatar() {
