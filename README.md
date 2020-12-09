@@ -17,4 +17,4 @@ https://gradle.org/install/
 
 # Game in Action #
 
-![homepage](https://i.imgur.com/LwRg1qA.png)
+![homepage](https://i.imgur.com/LwRg1qA.png = 250x250)
