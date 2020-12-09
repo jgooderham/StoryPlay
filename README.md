@@ -17,4 +17,7 @@ https://gradle.org/install/
 
 # Game in Action #
 
+Download our app from from the Google Play store! 
+https://play.google.com/store/apps/details?id=com.segroup9.storyplay
+
 <img src="https://i.imgur.com/kvoz8cu.png" width="650" height="450">
