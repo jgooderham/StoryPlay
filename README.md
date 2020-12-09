@@ -1,6 +1,10 @@
 # StoryPlay #
 
 Welcome to StoryPlay, an android application that takes you through stories that you can play! 
+Check is out on the Google Play store.
+https://play.google.com/store/apps/details?id=com.segroup9.storyplay
+
+<img src="https://i.imgur.com/kvoz8cu.png" width="650" height="450">
 
 # Languages & Tools #
 
@@ -17,7 +21,16 @@ https://gradle.org/install/
 
 # Game in Action #
 
-Download our app from from the Google Play store! 
-https://play.google.com/store/apps/details?id=com.segroup9.storyplay
+Choose your avatar and the story you want to play to learn about scientific careers!
 
-<img src="https://i.imgur.com/kvoz8cu.png" width="650" height="450">
+How about a marine biologist?
+
+<img src="https://i.imgur.com/9Ta2c9A.gif" width="650" height="450">
+
+Or a paleontologist?
+
+<img src="https://i.imgur.com/UAIqmsU.gif" width="650" height="450">
+
+Or maybe a pilot biologist?
+
+<img src="https://i.imgur.com/c4NeXY5.gif" width="650" height="450">
