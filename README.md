@@ -34,3 +34,6 @@ Or a paleontologist?
 Or maybe a pilot biologist?
 
 <img src="https://i.imgur.com/c4NeXY5.gif" width="650" height="450">
+
+Every story has plenty of age-appropriate text to read along with the profession narration. There's a mute button, back buttons, and restart buttons to navigate through the stories. StoryPlay is meant for ages 4-8 so there's no scary graphics but plenty of surprises. Check us out and leave us a review!
+
